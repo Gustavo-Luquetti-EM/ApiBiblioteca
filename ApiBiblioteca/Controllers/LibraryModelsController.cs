@@ -48,7 +48,7 @@ namespace ApiBiblioteca.Controllers
         }
 
         // GET: api/LibraryModels/5
-        [HttpGet("{id}")]
+        [HttpGet("{Id}")]
         public async Task<ActionResult<LibraryModels>> GetLibraryModels(int id)
         {
             var libraryModels = await _context.LibraryModels.FindAsync(id);
@@ -62,7 +62,7 @@ namespace ApiBiblioteca.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{Id}")]
         public async Task<IActionResult> PutLibraryModels(int id, LibraryModels libraryModels)
         {
             if (id != libraryModels.Id)
@@ -91,19 +91,11 @@ namespace ApiBiblioteca.Controllers
             return NoContent();
         }
 
-        // POST: api/LibraryModels
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+       
         [HttpPost]
-        public async Task<ActionResult<LibraryModels>> PostLibraryModels(LibraryModels libraryModels)
-        {
-            _context.LibraryModels.Add(libraryModels);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetLibraryModels), new { id = libraryModels.Id }, libraryModels);
-        }
-
+       
         // DELETE: api/LibraryModels/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{Id}")]
         public void Delete(int Id)
         {
             try
