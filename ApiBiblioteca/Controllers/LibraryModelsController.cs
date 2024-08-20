@@ -49,6 +49,33 @@ namespace ApiBiblioteca.Controllers
 
         
         [HttpGet("{Id}")]
+        public LibraryModels GetById(int Id)
+        {
+            var book = new LibraryModels();
+            try
+            {
+                string DefaultConnection = "User=SYSDBA;Password=masterkey;Database=C:\\Work.Luquetti\\LIBRARY.FDB;DataSource=localhost;Port=3054";
+                using FbConnection connection = new FbConnection(DefaultConnection);
+                connection.Open();
+                string query = "SELECT * FROM LIBRARYMODELS2 WHERE ID=@Id";
+                using FbCommand command = new(query, connection);
+                command.Parameters.AddWithValue("@Id", Id);
+              using (FbDataReader reader=command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        book.Id = Convert.ToInt32(reader["Id"]);
+                        book.BookName = (string)reader["BookName"];
+                        book.IsRent = (bool)reader["IsRent"];
+                    }
+                }
+            return book;
+            }catch(Exception ex)
+            {
+                throw new Exception("Erro ao buscar item");
+                return null;
+            }
+        }
 
        
 
