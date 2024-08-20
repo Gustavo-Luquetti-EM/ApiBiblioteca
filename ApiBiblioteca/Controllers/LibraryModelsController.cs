@@ -28,7 +28,7 @@ namespace ApiBiblioteca.Controllers
             using (FbConnection connection = new(DefaultConnection))
             {
                 connection.Open();
-                string query = "SELECT * FROM LIBRARYMODELS";
+                string query = "SELECT * FROM LIBRARYMODELS2";
                 using FbCommand command = new(query, connection);
                 using (FbDataReader reader = command.ExecuteReader())
                 {
@@ -91,9 +91,27 @@ namespace ApiBiblioteca.Controllers
             return NoContent();
         }
 
-       
+
         [HttpPost]
-       
+        public void Adicionar(LibraryModels libraryModels)
+        {
+            try
+            {
+                string DefaultConnection = "User=SYSDBA;Password=masterkey;Database=C:\\Work.Luquetti\\LIBRARYBD.FDB;DataSource=localhost;Port=3054";
+                using FbConnection connection = new(DefaultConnection);
+                connection.Open();
+                string query = "INSERT INTO LIBRARYMODELS2(BOOKNAME,ISRENT) VALUES(@BookName,@IsRent)";
+                using FbCommand command = new(query, connection);
+                command.Parameters.AddWithValue("@BookName", libraryModels.BookName);
+                command.Parameters.AddWithValue("@IsRent", libraryModels.IsRent);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao inserir item" + ex.Message);
+            }
+        }
+
         // DELETE: api/LibraryModels/5
         [HttpDelete("{Id}")]
         public void Delete(int Id)
@@ -105,19 +123,20 @@ namespace ApiBiblioteca.Controllers
                 using (FbConnection connection = new(DefaultConnection))
                 {
                     connection.Open();
-                    string query = "DELETE FROM LIBRARYMODELS WHERE ID = @Id ";
+                    string query = "DELETE FROM LIBRARYMODELS2 WHERE ID = @Id ";
                     using FbCommand command = new(query, connection);
                     command.Parameters.AddWithValue("@Id", Id);
                     command.ExecuteNonQuery();
                 }
 
             }
-            catch (Exception ex) {
-                throw new Exception("Erro ao deletar bomba" + ex.Message);
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao deletar item" + ex.Message);
             }
         }
 
-    
+
 
         private bool LibraryModelsExists(int id)
         {
