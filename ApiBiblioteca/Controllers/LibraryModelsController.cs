@@ -47,50 +47,32 @@ namespace ApiBiblioteca.Controllers
             return libraryModelsList;
         }
 
-        // GET: api/LibraryModels/5
+        
         [HttpGet("{Id}")]
-        public async Task<ActionResult<LibraryModels>> GetLibraryModels(int id)
-        {
-            var libraryModels = await _context.LibraryModels.FindAsync(id);
 
-            if (libraryModels == null)
-            {
-                return NotFound();
-            }
-
-            return libraryModels;
-        }
+       
 
 
         [HttpPut("{Id}")]
-        public async Task<IActionResult> PutLibraryModels(int id, LibraryModels libraryModels)
+        public void Update (LibraryModels libraryModels)
         {
-            if (id != libraryModels.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(libraryModels).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                string DefaultConnection = "User=SYSDBA;Password=masterkey;Database=C:\\Work.Luquetti\\LIBRARYBD.FDB;DataSource=localhost;Port=3054";
+                using FbConnection connection = new(DefaultConnection);
+                connection.Open();
+                string query = "UPDATE LIBRARYMODELS2 SET BOOKNAME=@BookName,ISRENT= @IsRent WHERE ID = @Id";
+                using FbCommand command = new(query, connection);
+                command.Parameters.AddWithValue("@Id", libraryModels.Id);
+                command.Parameters.AddWithValue("BookName", libraryModels.BookName);
+                command.Parameters.AddWithValue("@IsRent", libraryModels.IsRent);
+                command.ExecuteNonQuery();
             }
-            catch (DbUpdateConcurrencyException)
+            catch(Exception ex) 
             {
-                if (!LibraryModelsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                throw new Exception("Erro ao alterar item");
             }
-
-            return NoContent();
         }
-
 
         [HttpPost]
         public void Adicionar(LibraryModels libraryModels)
@@ -112,7 +94,6 @@ namespace ApiBiblioteca.Controllers
             }
         }
 
-        // DELETE: api/LibraryModels/5
         [HttpDelete("{Id}")]
         public void Delete(int Id)
         {
